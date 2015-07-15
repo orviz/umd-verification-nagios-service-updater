@@ -1,3 +1,11 @@
+*.py[cod]
+
+# Packages
+*.egg
+*.egg-info
+
+# Editors
+*~
+.*.swp
+
 .venv
-umdnsu.egg-info/
-site-urls.conf
