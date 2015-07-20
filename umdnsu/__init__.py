@@ -2,10 +2,11 @@ from flask import abort, json, Flask, url_for, request, jsonify
 import logging
 import subprocess
 
-from umdnsu.siteurls import SITEURLS, SITEURLS_FNAME
+from umdnsu.config import CFG
+from umdnsu import log
+from umdnsu.siteurls import SITEURLS
 
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
@@ -53,7 +54,7 @@ def wait_for_bdii(max_attempts=5):
 
 @app.route('/')
 def api_root():
-    return 'Welcome'
+    return 'Welcome to UMDNSU'
 
 
 @app.route('/siteurls', methods=["GET", "POST"])
@@ -88,11 +89,11 @@ def api_siteurls_get():
 
         enabled = False
         if url not in SITEURLS.values():
-            with open(SITEURLS_FNAME, "a") as f:
+            with open(CFG.config_file, "a") as f:
                 f.write("%s\t%s\n" % (prefix, url))
                 enabled = True
         else:
-            logger.info("URL already exists in '%s'" % SITEURLS_FNAME)
+            logger.info("URL already exists in '%s'" % CFG.config_file)
 
         if enabled:
             subprocess.call(["/etc/init.d/bdii", "restart"])
