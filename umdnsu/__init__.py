@@ -44,7 +44,7 @@ def wait_for_bdii(max_attempts=5):
             logger.debug("BDII restarted successfully.")
             restarted_ok = True
             break
-        if c>=max_attemps:
+        if c>=max_attempts:
             logger.error("BDII not responding after %s attempts."
                          % max_attempts)
             break
