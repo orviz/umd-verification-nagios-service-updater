@@ -1,34 +1,12 @@
 import logging
-import logging.config
+from logging import StreamHandler
 
-logger = logging.getLogger(__name__)
+default_formatter = logging.Formatter(\
+   "%(asctime)s:%(levelname)s:%(message)s")
 
-# load config from file
+default_handler = StreamHandler()
+default_handler.setFormatter(default_formatter)
 
-# logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
-
-# or, for dictConfig
-
-logging.config.dictConfig({
-    'version': 1,
-    'disable_existing_loggers': False,  # this fixes the problem
-
-    'formatters': {
-        'standard': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-        },
-    },
-    'handlers': {
-        'default': {
-            'level':'INFO',
-            'class':'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['default'],
-            'level': 'INFO',
-            'propagate': True
-        }
-    }
-})
+root = logging.getLogger()
+root.addHandler(default_handler)
+root.setLevel(logging.DEBUG)
