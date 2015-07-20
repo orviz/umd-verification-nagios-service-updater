@@ -1,6 +1,7 @@
 from flask import abort, json, Flask, url_for, request, jsonify
 import logging
 import subprocess
+import time
 
 from umdnsu.config import CFG
 from umdnsu import log
@@ -49,6 +50,7 @@ def wait_for_bdii(max_attempts=5):
                          % max_attempts)
             break
         c += 1
+        time.sleep(5)
     return restarted_ok
 
 
