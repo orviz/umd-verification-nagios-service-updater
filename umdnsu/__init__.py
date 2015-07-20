@@ -89,11 +89,11 @@ def api_siteurls_get():
 
         enabled = False
         if url not in SITEURLS.values():
-            with open(CFG.config_file, "a") as f:
+            with open(CFG.site_urls_file, "a") as f:
                 f.write("%s\t%s\n" % (prefix, url))
                 enabled = True
         else:
-            logger.info("URL already exists in '%s'" % CFG.config_file)
+            logger.info("URL already exists in '%s'" % CFG.site_urls_file)
 
         if enabled:
             subprocess.call(["/etc/init.d/bdii", "restart"])
@@ -117,4 +117,5 @@ def api_siteurls_get():
 
 
 def main():
-    app.run()
+    app.run(host=CFG.host,
+            port=CFG.port,)
