@@ -17,6 +17,7 @@ def parse_args():
                         help="interface to listen.")
     parser.add_argument("-p", "--port",
                         default="8080",
+                        type=int,
                         help="port to listen.")
     parser.add_argument("-f", "--site-urls-file",
                         default="/etc/bdii/gip/site-urls.conf",
