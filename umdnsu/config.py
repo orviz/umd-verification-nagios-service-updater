@@ -25,8 +25,10 @@ def parse_args():
 
     args = parser.parse_args()
     if not os.path.isfile(args.site_urls_file):
-        logger.error("Config file not found: '%s'" % args.site_urls_file)
-        sys.exit(100)
+        logger.debug("Config file not found: '%s'" % args.site_urls_file)
+        with open(args.site_urls_file, "w+"): pass
+        logger.debug("Config file '%s' created" % args.site_urls_file)
+    logger.info("Using site-urls file: %s" % args.site_urls_file)
     return args
 
 
