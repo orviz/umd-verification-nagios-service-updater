@@ -1,6 +1,7 @@
 from flask import abort, json, Flask, url_for, request, jsonify
 import logging
 import subprocess
+import time
 
 from umdnsu.config import CFG
 from umdnsu import log
@@ -44,10 +45,11 @@ def wait_for_bdii(max_attempts=5):
             logger.debug("BDII restarted successfully.")
             restarted_ok = True
             break
-        if c>=max_attemps:
+        if c>=max_attempts:
             logger.error("BDII not responding after %s attempts."
                          % max_attempts)
             break
+        time.sleep(5)
         c += 1
     return restarted_ok
 
@@ -72,7 +74,6 @@ def api_siteurls_get():
         if request.headers['Content-Type'] == 'application/json':
             try:
                 name = request.json["name"]
-                url = request.json["url"]
             except KeyError, e:
                 logger.error("400 Bad Request")
                 abort(400)
@@ -80,6 +81,7 @@ def api_siteurls_get():
             logger.debug("415 Unsupported Media Type ;")
             abort(415)
 
+        url = "ldap://%s:2170/mds-vo-name=resource,o=grid" % request.remote_addr
         prefix_no = get_prefix_no(name)
         if prefix_no:
             prefix = ''.join([name, prefix_no])
@@ -97,10 +99,10 @@ def api_siteurls_get():
 
         if enabled:
             subprocess.call(["/etc/init.d/bdii", "restart"])
-            logger.debug("BDII restarted.")
+            logger.info("BDII restarted.")
             if wait_for_bdii():
                 subprocess.call("/usr/sbin/ncg.reload.sh")
-                logger.debug("Executed 'ncg.reload.sh' script.")
+                logger.info("Executed 'ncg.reload.sh' script.")
             else:
                 logger.info(("Check BDII and run 'ncg.reload.sh'"
                              "script manually."))
